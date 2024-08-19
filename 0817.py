@@ -5,29 +5,29 @@ from shapely.geometry import Point
 import requests
 from math import radians, sin, cos, sqrt, atan2
 
-# 初始化Flask应用
+# 初始化Flask應用
 app = Flask(__name__)
 
-# 加载交通事故热点数据
+# 加載交通事故熱點數據
 file_path = '/Users/chinlin/Desktop/test/0_ALL_108-112_CBI.csv'
 df = pd.read_csv(file_path)
 df_cleaned = df.dropna(subset=['經度', '緯度'])
 df_cleaned['CBI值'] = df_cleaned['事件類別'].apply(lambda x: 3 if x == 'A1' else 1)
 gdf = gpd.GeoDataFrame(df_cleaned, geometry=gpd.points_from_xy(df_cleaned.經度, df_cleaned.緯度))
 
-# LINE Notify API设置
-line_notify_token = 'zhYZA7ShKGXR7toroizFIsTEkp7JdRtVRx1p7c8jg2d'  # 替换为你的LINE Notify Token
+# LINE Notify API設置
+line_notify_token = ''  # 替换为你的LINE Notify Token
 
-# Haversine公式来计算两个地理坐标之间的距离
+# Haversine公式來計算兩個地理坐標之間的距離
 def haversine(lat1, lon1, lat2, lon2):
-    R = 6371  # 地球半径（公里）
+    R = 6371  # 地球半徑（公里）
     dlat = radians(lat2 - lat1)
     dlon = radians(lon2 - lon1)
     a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
     c = 2 * atan2(sqrt(a), sqrt(1 - a))
     return R * c
 
-# 接收来自Android应用的定位数据
+# 接收來自Android應用的定位數據
 @app.route('/', methods=['POST'])
 def receive_location():
     data = request.json
@@ -43,10 +43,10 @@ def receive_location():
     except ValueError:
         return jsonify({"status": "error", "message": "Invalid latitude or longitude format"}), 400
 
-    # 检查用户位置与事故热点的距离
+    # 檢查用戶位置與事故熱點的距離
     for idx, row in gdf.iterrows():
         distance_km = haversine(latitude, longitude, row.geometry.y, row.geometry.x)
-        if distance_km <= 0.1:  # 假设100米作为阈值
+        if distance_km <= 0.1:  # 假設100米做為閾值
             message = f"您看護的長者距離最近的行人事故熱點僅有{distance_km * 1000:.2f}米，請注意安全！"
             send_line_notify(message)
             return jsonify({"status": "warning", "message": message}), 200
