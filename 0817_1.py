@@ -22,11 +22,11 @@ import threading
 from datetime import datetime
 
 # 定義 Google Maps API Key
-api_key = 'AIzaSyBmKpxSthTqntMDNjP-k3YCS-ckkxDxYew'
+api_key = ''
 
 # 設置LINE Messaging API
-line_bot_api = LineBotApi('083ucgudP5l8xvi9aZYxixex1uVNLsVDYduULynHj2SMsaJ8UyPa8q7AakTuDGSsiRaulUIqEz4sgQL97GRpc+QE+DUBKwRaD6Pr3HcZ+CpE5m0wtVUAIplYxyq4urWyNC21vx/2zht/9bNKglm0ZgdB04t89/1O/w1cDnyilFU=')
-handler = WebhookHandler('58bfe9545c80505fc9c02add849dee96')
+line_bot_api = LineBotApi('')
+handler = WebhookHandler('')
 
 # 加載和清理數據
 file_path = '/Users/chinlin/Desktop/test/0_ALL_108-112_CBI.csv'
@@ -36,7 +36,7 @@ df_cleaned['CBI值'] = df_cleaned['事件類別'].apply(lambda x: 3 if x == 'A1'
 gdf = gpd.GeoDataFrame(df_cleaned, geometry=gpd.points_from_xy(df_cleaned.經度, df_cleaned.緯度))
 
 # LINE Notify API 設置
-line_notify_token = 'z6hz7ANxXzfXai58No7vVs15D4OMFYtbHEKlMYAs3qp'
+line_notify_token = ''
 
 # 初始化 Flask 應用
 app = Flask(__name__, static_folder='/Users/chinlin/Desktop/test/templates/static')
